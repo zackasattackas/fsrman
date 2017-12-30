@@ -5,16 +5,18 @@ using System.Security;
 using System.Security.Permissions;
 using System.Security.Principal;
 using Microsoft.Win32.SafeHandles;
+// ReSharper disable InconsistentNaming
 
-namespace fsrman
+namespace MsftFsrm
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-    public class Impersonation : IDisposable
+    internal class Impersonation : IDisposable
     {
+        private bool _disposed = false;
         private readonly SafeTokenHandle _handle;
         private readonly WindowsImpersonationContext _context;
 
-        const int LOGON32_LOGON_NEW_CREDENTIALS = 9;
+        private const int LOGON32_LOGON_NEW_CREDENTIALS = 9;
 
         public Impersonation(string domain, string username, string password)
         {
@@ -31,17 +33,34 @@ namespace fsrman
 
         public void Dispose()
         {
-            this._context.Dispose();
-            this._handle.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (this._disposed)
+            {
+                return;
+            }
+            if (disposing)
+            {
+                this._context.Dispose();
+                this._handle.Dispose();
+            }
+
+            this._disposed = true;
         }
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool LogonUser(String lpszUsername, String lpszDomain, String lpszPassword, int dwLogonType, int dwLogonProvider, out SafeTokenHandle phToken);
+        private static extern bool LogonUser(string lpszUsername, string lpszDomain, string lpszPassword, int dwLogonType, int dwLogonProvider, out SafeTokenHandle phToken);
 
-        public sealed class SafeTokenHandle : SafeHandleZeroOrMinusOneIsInvalid
+        internal sealed class SafeTokenHandle : SafeHandleZeroOrMinusOneIsInvalid
         {
             private SafeTokenHandle()
-                : base(true) { }
+                : base(true)
+            {                
+            }
 
             [DllImport("kernel32.dll")]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
@@ -51,7 +70,7 @@ namespace fsrman
 
             protected override bool ReleaseHandle()
             {
-                return CloseHandle(handle);
+                return SafeTokenHandle.CloseHandle(handle);
             }
         }
     }

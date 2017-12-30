@@ -2,7 +2,7 @@
 using System.Management;
 using System.Net;
 
-namespace fsrman
+namespace MsftFsrm
 {
     public class FsrmSettings
     {

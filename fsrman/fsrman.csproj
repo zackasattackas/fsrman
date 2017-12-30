@@ -45,13 +45,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FsrmanOptions.cs" />
-    <Compile Include="Impersonation.cs" />
     <Compile Include="CmdLineApp.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="FsrmSettings.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MsftFsrm\MsftFsrm.csproj">
+      <Project>{e0b6b952-3fd0-46b9-b0dd-2f765b6cc2c2}</Project>
+      <Name>MsftFsrm</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

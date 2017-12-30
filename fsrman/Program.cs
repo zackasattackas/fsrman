@@ -1,8 +1,9 @@
 ﻿using System;
+using MsftFsrm;
+
 #if DEBUG
 using System.Diagnostics;
 #endif
-using static fsrman.Helpers;
 
 namespace fsrman
 {
@@ -30,7 +31,7 @@ namespace fsrman
                 
                 var cliOptions = new FsrmanOptions(app);
 
-                if (!IsFsrmInstalledAndRunning(cliOptions.ComputerName, cliOptions.Credentials))
+                if (!FsrmUtil.IsServiceRunning(cliOptions.ComputerName, cliOptions.Credentials))
                 {
                     throw new ApplicationException($"The File Server Resource Manager service on computer {cliOptions.ComputerName} is either not installed or is not running");
                 }
