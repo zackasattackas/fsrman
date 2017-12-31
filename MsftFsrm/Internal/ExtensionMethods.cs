@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Management;
 using System.Reflection;
 
 namespace MsftFsrm.Internal
@@ -18,6 +19,25 @@ namespace MsftFsrm.Internal
         public static void Invoke(this MethodInfo m, object obj, params object[] parameters)
         {
             m.Invoke(obj, parameters);
+        }
+
+        public static ManagementObject Single(this ManagementObjectCollection c)
+        {
+            if (c.Count == 0)
+            {
+                throw new Exception("The collection contained no elements."); // Should never happen.
+            }
+            if (c.Count > 1)
+            {
+                throw new Exception("The collection contained more the one element.");
+            }
+
+            ManagementObject ret = null;
+            foreach (var obj in c)
+            {
+                ret = (ManagementObject) obj;
+            }
+            return ret;
         }
     }
 }

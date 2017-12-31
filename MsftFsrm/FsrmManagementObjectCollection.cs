@@ -5,19 +5,13 @@ using System.Management;
 using System.Net;
 using System.Reflection;
 using MsftFsrm.Internal;
+using static MsftFsrm.Strings;
 
 namespace MsftFsrm
 {
-    public abstract class FsrmManagementObject
+
+    public class FsrmManagementObject
     {
-        #region Constants
-
-        /// <summary>
-        /// The FSRM WMI namespace.
-        /// </summary>
-        private const string Namespace = "root\\Microsoft\\Windows\\FSRM";
-
-        #endregion
 
         #region Properties
 
@@ -43,8 +37,9 @@ namespace MsftFsrm
 
         #region Constructors
 
-        protected FsrmManagementObject()
+        internal FsrmManagementObject(ManagementObject o)
         {            
+            this.Bind(o);
         }
 
         protected FsrmManagementObject(string computerName, NetworkCredential credentials)
@@ -60,7 +55,7 @@ namespace MsftFsrm
         /// <summary>
         /// Binds the current instance to the underlying WMI class.
         /// </summary>
-        protected void Bind()
+        private void Bind(ManagementObject o)
         {
             var attr = this.GetType().GetCustomAttribute<FsrmWmiObjectAttribute>();
             if (attr == null)
@@ -68,7 +63,7 @@ namespace MsftFsrm
                 throw new Exception("The instance does not have the FsrmWmiObject attribute.");
             }
 
-            this.BaseWmiObject = this.GetFsrmWmiObject(attr.ClassName);
+            this.BaseWmiObject = Helpers.GetFsrmWmiObject(attr.ClassName);
 
             foreach (var property in this.GetAssigableProperties())
             {
@@ -79,13 +74,13 @@ namespace MsftFsrm
             }
         }
 
-        /// <summary>
-        /// Refreshes the instance to reflect any changes made by another process. If any changes made in the current process have not been persisted by calling <see cref="SaveChanges"/>, the changes will be overwritten.
-        /// </summary>
-        public virtual void Refresh()
-        {
-            this.Bind();
-        }
+        ///// <summary>
+        ///// Refreshes the instance to reflect any changes made by another process. If any changes made in the current process have not been persisted by calling <see cref="SaveChanges"/>, the changes will be overwritten.
+        ///// </summary>
+        //public virtual void Refresh()
+        //{
+        //    this.Bind();
+        //}
 
         /// <summary>
         /// Calls <see cref="ManagementObject.Put()"/> to persist modified properties.
@@ -110,25 +105,30 @@ namespace MsftFsrm
 
         #region Helper Methods
 
-        private ManagementObject GetFsrmWmiObject(string className)
-        {
-            var scope = this.ComputerName == null
-                ? new ManagementScope()
-                : new ManagementScope($"\\\\{this.ComputerName ?? Environment.MachineName}\\{Namespace}");
+        //private ManagementObjectCollection GetFsrmWmiObjectCollection(string className)
+        //{
+        //    var scope = this.ComputerName == null
+        //        ? new ManagementScope()
+        //        : new ManagementScope($"\\\\{this.ComputerName ?? Environment.MachineName}\\{Namespace}");
 
-            if (this.Credentials != null)
-            {
-                scope.Options = new ConnectionOptions
-                {
-                    Username = this.Credentials.UserName,
-                    SecurePassword = this.Credentials.SecurePassword,
-                    Authority = $"NTLMDOMAIN:{this.Credentials.Domain}",
-                    Impersonation = ImpersonationLevel.Impersonate
-                };
-            }
+        //    if (this.Credentials != null)
+        //    {
+        //        scope.Options = new ConnectionOptions
+        //        {
+        //            Username = this.Credentials.UserName,
+        //            SecurePassword = this.Credentials.SecurePassword,
+        //            Authority = $"NTLMDOMAIN:{this.Credentials.Domain}",
+        //            Impersonation = ImpersonationLevel.Impersonate
+        //        };
+        //    }
 
-            return new ManagementObject(scope, new ManagementPath(className), new ObjectGetOptions());
-        }
+        //    var searcher = new ManagementObjectSearcher(scope, new ObjectQuery(string.Format(WmiQuerySelectStarFromClass, className)));
+        //    return searcher.Get();
+        //}
+        //private ManagementObject GetFsrmWmiObject(string className)
+        //{
+        //    return GetFsrmWmiObjectCollection(className).Single();
+        //}
 
         private IEnumerable<PropertyInfo> GetAssigableProperties()
         {
@@ -138,5 +138,22 @@ namespace MsftFsrm
         }
 
         #endregion
+    }
+
+    public abstract class FsrmManagementObjectCollection : List<FsrmManagementObject>
+    {
+        private List<FsrmManagementObject> _list;
+        public ManagementObjectCollection BaseWmiObjectCollection { get; private set; }
+        public string ComputerName { get; set; }
+        public NetworkCredential Credentials { get; set; }
+
+        protected void Bind(ManagementObjectCollection c)
+        {
+            this._list = new List<FsrmManagementObject>();
+            foreach (var o in c)
+            {
+                this._list.Add(new FsrmManagementObject(o as ManagementObject));
+            }
+        }
     }
 }

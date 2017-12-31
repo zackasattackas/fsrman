@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using MsftFsrm.Internal;
 
 namespace MsftFsrm
 {
-    [FsrmWmiObject(ClassName = "MSFT_FSRMSettings.Server='Reserved'")]
+    [FsrmWmiObject(ClassName = "MSFT_FSRMSettings")]
     public class FsrmSettings : FsrmManagementObject
     {
         #region Properties
@@ -196,11 +197,11 @@ namespace MsftFsrm
         /// <param name="toEmailAddress"></param>
         public void SendTestEmail(string toEmailAddress)
         {
-            var inParams = this.BaseWmiObject.GetMethodParameters(nameof(this.SendTestEmail));
+            var inParams = this.BaseWmiObject.Single().GetMethodParameters(nameof(this.SendTestEmail));
 
             inParams["ToEmailAddress"] = toEmailAddress;
 
-            this.BaseWmiObject.InvokeMethod(nameof(this.SendTestEmail), inParams, null);
+            this.BaseWmiObject.Single().InvokeMethod(nameof(this.SendTestEmail), inParams, null);
         }
 
         #endregion

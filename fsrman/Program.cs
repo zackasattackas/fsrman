@@ -10,7 +10,6 @@ namespace fsrman
     {
         private static void Main(string[] args)
         {
-
             try
             {
                 CmdLineApp.PrintCopyright();
