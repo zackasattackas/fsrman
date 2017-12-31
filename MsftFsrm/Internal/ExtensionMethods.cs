@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace MsftFsrm.Internal
 {
@@ -15,6 +13,11 @@ namespace MsftFsrm.Internal
         public static TAttribute GetCustomAttribute<TAttribute>(this MemberInfo m) where TAttribute : Attribute
         {
             return m.GetCustomAttributes(false).OfType<TAttribute>().FirstOrDefault();
+        }
+
+        public static void Invoke(this MethodInfo m, object obj, params object[] parameters)
+        {
+            m.Invoke(obj, parameters);
         }
     }
 }

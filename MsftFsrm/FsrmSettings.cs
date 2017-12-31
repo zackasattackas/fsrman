@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using MsftFsrm;
 
 namespace MsftFsrm
 {
-    [FsrmWmiObjectAttribute(ClassName = "MSFT_FSRMSettings.Server='Reserved'")]
+    [FsrmWmiObject(ClassName = "MSFT_FSRMSettings.Server='Reserved'")]
     public class FsrmSettings : FsrmManagementObject
     {
         #region Properties
@@ -163,40 +162,10 @@ namespace MsftFsrm
         /// A semicolon-separated list of email addresses. "[Admin Email]" is an acceptable email address. The default value is an empty string. Optional.
         /// </summary>
         public string ReportClassificationMailTo { get; set; } = "";
-
         /// <summary>
         /// A flags value indicating the type and content of logs generated for classification. Optional.
         /// </summary>
-        public ReportClassificationLogTypes ReportClassificationLog
-        {
-            get
-            {
-                var agg = ((int[]) this.BaseWmiObject[nameof(ReportClassificationLog)]).Sum();
-                return (ReportClassificationLogTypes) Enum.Parse(typeof(ReportClassificationLogTypes), agg.ToString());
-            }
-            set
-            {
-                var flags = new List<ReportClassificationLogTypes>();
-                if (value.HasFlag(ReportClassificationLogTypes.ClassificationsInLogFile))
-                {
-                    flags.Add(ReportClassificationLogTypes.ClassificationsInLogFile);
-                }
-                if (value.HasFlag(ReportClassificationLogTypes.ErrorsInLogFile))
-                {
-                    flags.Add(ReportClassificationLogTypes.ErrorsInLogFile);
-                }
-                if (value.HasFlag(ReportClassificationLogTypes.ClassificationsInSystemLog))
-                {
-                    flags.Add(ReportClassificationLogTypes.ClassificationsInSystemLog);
-                }
-                if (value.HasFlag(ReportClassificationLogTypes.ErrorsInSystemLog))
-                {
-                    flags.Add(ReportClassificationLogTypes.ErrorsInSystemLog);
-                }
-
-                this.BaseWmiObject[nameof(ReportClassificationLog)] = flags.ToArray();
-            }
-        }
+        public uint[] ReportClassificationLog { get; set; }
         /// <summary>
         /// The SMTP server that FSRM uses to send email.
         /// </summary>
