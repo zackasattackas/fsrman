@@ -5,9 +5,10 @@ using System.Security;
 using System.Security.Permissions;
 using System.Security.Principal;
 using Microsoft.Win32.SafeHandles;
+
 // ReSharper disable InconsistentNaming
 
-namespace MsftFsrm
+namespace MsftFsrm.Internal
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     internal class Impersonation : IDisposable

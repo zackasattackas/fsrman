@@ -1,5 +1,7 @@
 ﻿using System;
 
+// ReSharper disable CheckNamespace
+
 namespace MsftFsrm
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]

@@ -52,13 +52,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
+    <Compile Include="Internal\Constants.cs" />
     <Compile Include="FsrmManagementObject.cs" />
     <Compile Include="FsrmSettings.cs" />
     <Compile Include="FsrmUtil.cs" />
-    <Compile Include="FsrmWmiObjectAttribute.cs" />
-    <Compile Include="Impersonation.cs" />
+    <Compile Include="Attributes\FsrmWmiIgnoreAttribute.cs" />
+    <Compile Include="Attributes\FsrmWmiObjectAttribute.cs" />
+    <Compile Include="Attributes\FsrmWmiPropertyAttribute.cs" />
+    <Compile Include="Internal\Impersonation.cs" />
+    <Compile Include="Internal\ExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportClassificationFormats.cs" />
+    <Compile Include="ReportClassificationLogTypes.cs" />
     <Compile Include="RestartNeededException.cs" />
   </ItemGroup>
   <ItemGroup>

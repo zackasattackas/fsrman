@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceProcess;
 using Microsoft.Dism;
+using MsftFsrm.Internal;
 
 namespace MsftFsrm
 {

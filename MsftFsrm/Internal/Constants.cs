@@ -1,4 +1,4 @@
-﻿namespace MsftFsrm
+﻿namespace MsftFsrm.Internal
 {
     internal class Constants
     {

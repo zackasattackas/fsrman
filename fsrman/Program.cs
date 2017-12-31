@@ -1,6 +1,5 @@
 ﻿using System;
 using MsftFsrm;
-
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -11,6 +10,7 @@ namespace fsrman
     {
         private static void Main(string[] args)
         {
+
             try
             {
                 CmdLineApp.PrintCopyright();
@@ -38,13 +38,15 @@ namespace fsrman
 
                 var currentSettings = new FsrmSettings(cliOptions.ComputerName, cliOptions.Credentials);
 
+                Console.WriteLine(string.Join(", ", currentSettings.ReportClassificationFormat));
+
                 #region -l List
 
                 if (cliOptions.ListOnly)
                 {
                     const string fmt = "{0,-10} : {1}";
                     
-                    Console.WriteLine(fmt, "Server", cliOptions.ComputerName);
+                    Console.WriteLine(fmt, "Server", currentSettings.ComputerName);
                     Console.WriteLine(fmt, "AdminEmail", currentSettings.AdminEmailAddress);
                     Console.WriteLine(fmt, "FromEmail", currentSettings.FromEmailAddress);
                     Console.WriteLine(fmt, "SmtpServer", currentSettings.SmtpServer);
